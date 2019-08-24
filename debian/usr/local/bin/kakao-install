@@ -1,0 +1,138 @@
+#!/bin/bash
+########################################################################
+# Info: 하모니카 리눅스에서 윈도용 카카오톡을 설치해 주는 프로그램
+# Contributors : Kevin Kim (root@hamonikr.org)
+# Licensed under the GPL 2.0
+#######################################################################
+
+# wine, winetricks 설치여부 확인
+if [ $(dpkg-query -W -f='${Status}' wine-stable 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+    zenity --error --no-wrap --height=150 --width=250 --title "필수 프로그램 설치 필요" --text=$"
+    카카오톡 설치를 위해서는 wine-stable 과 winetricks 패키지가 필요합니다. 
+
+    wine, winetricks 패키지는 아래와 같이 설치 가능합니다. (루트 권한 필요)
+
+    sudo dpkg --add-architecture i386 
+    apt-get update 
+    apt-get install -y --install-recommends wine-stable winetricks
+
+    프로그램 설치 후 다시 실행해 주세요"
+exit 0
+fi
+
+# 실제 프로그램 사용자 아이디
+if [ ! -z $SUDO_USER ]; then
+    userid=$SUDO_USER
+else
+    userid=$USER
+fi
+
+if [ "$UID" = "0" ]; then
+    zenity --error --no-wrap --height=150 --width=250 --title "실행권한 오류" --text=$"    죄송합니다!!!!!
+    
+    루트로는 이 스크립트를 실행해서는 안됩니다.
+    
+    사용자 계정으로 이 스크립트를 이용해 주세요!!!!"
+exit 0
+
+fi
+
+zenity --info --no-wrap --height=150 --width=450 --title "카카오톡 설치 마법사" --text=$"
+이 설치마법사는 윈도용 카카오톡을 리눅스에서 사용할 수 있도록 윈도용 카카오톡을 
+설치해 주는 마법사입니다.
+
+윈도용 카카오톡이 실행되는데 필요한 라이브러리들을 설치한 후 윈도우용 카카오톡을 
+설치해 줄 것입니다. 몇몇 윈도 라이브러리 설치 과정은 여러분이 직접해 주어야 하는 
+것이 있습니다. 라이브러리 설치 화면대로 진행해 주면 큰 어려움이 없습니다. 
+
+그러면 지금부터 카카오톡을 설치하겠습니다.
+"
+
+if [ -d /home/$userid/.wine ]; then
+zenity --question --no-wrap --height=150 --width=450 --title="와인 홈경로 검색"  --text=$"
+    이전에 WINE을 환경 설정한 적이 있습니다. 카카오톡을 설치하기 위해선 
+    기존 환경 설정을 제거해야 하고 새로 환경 설정을 해야 합니다. 
+    
+    원치 않는다면 취소해 주시고, 기존 와인 경로를 변경한 후에 다시 스크립트를 
+    실행해 주세요. 
+
+    기존 와인 경로를 모두 삭제하고 카카오톡을 설치할까요? 
+" $?
+    if [ $? != 0 ]; then
+    exit 0
+    else
+    rm -fr /home/$userid/.wine
+    rm -rf /home/$userid/.cache/winetricks
+    env WINEPREFIX=/home/$userid/.wine WINEARCH=win32 wine wineboot
+    fi
+else
+    rm -rf /home/$userid/.cache/winetricks
+    (env WINEPREFIX=/home/$userid/.wine WINEARCH=win32 wine wineboot 
+    echo; sleep 2 ) | 
+    zenity --progress --title ="와인 환경 설정(WINEPREFIX)" --text=$"
+    
+    와인(WINE) 환경을 설정하고 있습니다. 잠시만 기다려 주세요.
+    
+    " --auto-close --auto-kill ;
+fi
+
+(
+winetricks gdiplus
+echo "20"
+winetricks riched30
+echo "40"
+winetricks msxml3
+echo "60"
+winetricks msxml6
+echo "80"
+winetricks wmp9
+echo "90"
+winetricks winhttp
+echo "100"
+echo; sleep 2 ) |
+
+zenity --progress --title=" 와인 라이브러리 설치" --text=$"
+    
+    카카오톡 설치에 필요한 라이브러리를 다운로드하여 설치하고 있습니다.
+
+    네트워크 상태에 따라 다운로드에 시간이 오래 걸릴 수 있습니다.
+    
+    프로그램 설치 화면의 다음(Next) 버튼을 누르면 자동으로 설치가 진행됩니다. 
+    단 MSXML 라이브러리 설치 과정은 직접 임의의 값을 입력해주세요. 
+    
+    그외는 자동으로 모든 라이브러리를 설치해 줄 것입니다.
+
+    " percentage=0 --auto-close --auto-kill ;
+
+
+zenity --info --no-wrap --height=150 --width=450 --title "라이브러리 설치 완료" --text=$"
+
+카카오톡 설치에 필요한 라이브러리들이 설치되었습니다. 
+
+이제 윈도우용 카카오톡을 다운로드하여 설치할 것입니다.
+
+확인 버튼을 누르시고 잠시만 기다려 주세요...!!!
+"
+
+# KakaoTalk Install File Download and Install
+wget http://app.pc.kakao.com/talk/win32/xp/KakaoTalk_Setup.exe -P /tmp
+wine /tmp/KakaoTalk_Setup.exe
+rm -f /tmp/KakaoTalk_Setup.exe
+rm -fr ~/.cache/winetricks
+
+zenity --info --no-wrap --height=150 --width=450 --title "카카오톡 설치 완료" --text=$"카카오톡 설치가 완료되었습니다.
+
+카카오톡 계정으로 로그인해 보시기 바랍니다. 
+
+로그인이 안될 경우에는 
+스마트폰 카카오톡에서 [전체설정 -> 개인/보안 -> PC 연결관리 -> PC인증 해제]를
+클릭하여 기존 인증을 제거한 후에 다시 인증을 시도해 보기 바랍니다.
+
+인증한 후에도 로그인 오류가 발생된다면 
+카카오톡을 완전 종료한 후에 다시 로그인해 보기 바랍니다. 
+
+로그인 문제및 다른 오류가 있을 경우에는 
+하모니카 커뮤니티 홈페이지 (https://hamonikr.org)게시판을
+이용해 주시기 바랍니다.
+
+감사합니다."

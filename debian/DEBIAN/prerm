@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+userid=`sudo who | cut -d' ' -f 1`
+
+if [ -f "/home/${userid}/Desktop/kakao-install.desktop" ]; then
+    rm -f /home/${userid}/Desktop/kakao-install.desktop
+fi
+
+if [ -f "/etc/skel/Desktop/kakao-install.desktop" ]; then
+    rm -f /etc/skel/Desktop/kakao-install.desktop
+fi
+
+gtk-update-icon-cache

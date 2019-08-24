@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Kakaotalk Install
+Name[ko]=카카오톡 설치하기
+GenericName=Kakaotalk Installer
+GenericName[ko]=카카오톡 설치지원 프로그램
+Comment=Kakaotalk Installer
+Comment[ko]=카카오톡 설치를 지원합니다.
+Icon=/usr/share/icons/hicolor/256x256/apps/kakao-install.png
+Exec=kakao-install
+Terminal=true
+Type=Application
+Categories=Web;

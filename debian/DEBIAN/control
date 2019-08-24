@@ -1,0 +1,15 @@
+Package: kakao-install
+Version: 1.0.0
+Architecture: all
+Maintainer: HamoniKR Team (HamoniKR OS Developement Group) <hamonikr-packages@googlegroups.com>
+Installed-Size: 27848
+Pre-Depends: dpkg (>= 1.15.6)
+Depends: winehq-stable (>=4), winetricks
+Recommends: 
+Section: utils
+Priority: optional
+Homepage: https://hamonikr.org
+Description: KakaoTalk Installer for HamoniKR
+ 하모니카 리눅스에서 윈도우용 카카오톡을 사용할 수 있도록 설치를 도와주는 프로그램
+ This script provide install for Windows version KakaoTalk.
+

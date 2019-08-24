@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+gtk-update-icon-cache
+
+userid=`sudo who | cut -d' ' -f 1`
+install -m 755 -o $userid -D /usr/share/applications/kakao-install.desktop /home/$userid/Desktop
+install -m 755 -D /usr/share/applications/kakao-install.desktop /etc/skel/Desktop
