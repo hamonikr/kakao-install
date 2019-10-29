@@ -1,0 +1,19 @@
+kakao-install (1.0.2-1) bionic; urgency=medium
+
+  * 설치시 저장소 업데이트 부분 수정
+
+ -- HamoniKR Team <hamonikr-packages@googlegroups.com> Mon, 21 Oct 2019 10:38:57 +0900
+
+
+kakao-install (1.0.1-1) bionic; urgency=medium
+
+  * wine 설치 오류 수정
+
+ -- HamoniKR Team <hamonikr-packages@googlegroups.com> Tue, 15 Oct 2019 21:55:20 +0900
+
+
+kakao-install (1.0.0-1) bionic; urgency=medium
+
+  * first
+
+ -- HamoniKR Team <hamonikr-packages@googlegroups.com> Tue, 14 Oct 2019 20:53:20 +0900

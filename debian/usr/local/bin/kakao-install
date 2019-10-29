@@ -5,28 +5,6 @@
 # Licensed under the GPL 2.0
 #######################################################################
 
-# wine, winetricks 설치여부 확인
-if [ $(dpkg-query -W -f='${Status}' wine-stable 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-    zenity --error --no-wrap --height=150 --width=250 --title "필수 프로그램 설치 필요" --text=$"
-    카카오톡 설치를 위해서는 wine-stable 과 winetricks 패키지가 필요합니다. 
-
-    wine, winetricks 패키지는 아래와 같이 설치 가능합니다. (루트 권한 필요)
-
-    sudo dpkg --add-architecture i386 
-    apt-get update 
-    apt-get install -y --install-recommends wine-stable winetricks
-
-    프로그램 설치 후 다시 실행해 주세요"
-exit 0
-fi
-
-# 실제 프로그램 사용자 아이디
-if [ ! -z $SUDO_USER ]; then
-    userid=$SUDO_USER
-else
-    userid=$USER
-fi
-
 if [ "$UID" = "0" ]; then
     zenity --error --no-wrap --height=150 --width=250 --title "실행권한 오류" --text=$"    죄송합니다!!!!!
     
@@ -36,6 +14,30 @@ if [ "$UID" = "0" ]; then
 exit 0
 
 fi
+
+
+# wine, winetricks 설치여부 확인
+#if [ $(dpkg-query -W -f='${Status}' wine-stable 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+#    zenity --error --no-wrap --height=150 --width=250 --title "필수 프로그램 설치 필요" --text=$"
+#    카카오톡 설치를 위해서는 wine-stable 과 winetricks 패키지가 필요합니다. 
+#
+#    wine, winetricks 패키지는 아래와 같이 설치 가능합니다. (루트 권한 필요)
+#
+#    sudo dpkg --add-architecture i386 
+#    apt-get update 
+#    apt-get install -y --install-recommends wine-stable winetricks
+#
+#    프로그램 설치 후 다시 실행해 주세요"
+#exit 0
+#fi
+
+# 실제 프로그램 사용자 아이디
+if [ ! -z $SUDO_USER ]; then
+    userid=$SUDO_USER
+else
+    userid=$USER
+fi
+
 
 zenity --info --no-wrap --height=150 --width=450 --title "카카오톡 설치 마법사" --text=$"
 이 설치마법사는 윈도용 카카오톡을 리눅스에서 사용할 수 있도록 윈도용 카카오톡을 
@@ -47,6 +49,20 @@ zenity --info --no-wrap --height=150 --width=450 --title "카카오톡 설치 �
 
 그러면 지금부터 카카오톡을 설치하겠습니다.
 "
+
+# wine-stable-i386 패키지 설치를 위한 저장소 수정
+pkexec sudo su - root -c "\
+	sudo sed -i \"s/\[arch\=amd64\]/\[arch\=amd64\,i386\]/g\" /etc/apt/sources.list.d/official-package-repositories.list; \
+	sudo dpkg --add-architecture i386; \
+	sudo apt-get update; \
+	sudo apt-get install winehq-stable=4.0~bionic \
+				winetricks \
+				wine32-development:i386 \
+				libwine-development:i386=3.6-1 \
+				winehq-stable \
+				wine-stable=4.0~bionic \
+				wine32-development -y;"
+
 
 if [ -d /home/$userid/.wine ]; then
 zenity --question --no-wrap --height=150 --width=450 --title="와인 홈경로 검색"  --text=$"
@@ -114,11 +130,20 @@ zenity --info --no-wrap --height=150 --width=450 --title "라이브러리 설치
 확인 버튼을 누르시고 잠시만 기다려 주세요...!!!
 "
 
+
+# 저장소 원복
+pkexec sudo su - root -c "\
+	sudo sed -i \"s/\,i386//g\" /etc/apt/sources.list.d/official-package-repositories.list; \
+	sudo apt-get update;"
+
+
 # KakaoTalk Install File Download and Install
 wget http://app.pc.kakao.com/talk/win32/xp/KakaoTalk_Setup.exe -P /tmp
-wine /tmp/KakaoTalk_Setup.exe
+#wine /tmp/KakaoTalk_Setup.exe
+WINEARCH=win32 wine /tmp/KakaoTalk_Setup.exe
 rm -f /tmp/KakaoTalk_Setup.exe
 rm -fr ~/.cache/winetricks
+
 
 zenity --info --no-wrap --height=150 --width=450 --title "카카오톡 설치 완료" --text=$"카카오톡 설치가 완료되었습니다.
 
