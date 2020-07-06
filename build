@@ -6,7 +6,7 @@ VER=`cat debian/DEBIAN/control | grep Version | cut -d' ' -f 2`
 echo "Packaging Start... Please Wait a while..." 
 
 echo "Generate md5 chucksum file" 
-find debian/{usr,etc} -type f -exec md5sum {} \; > debian/DEBIAN/md5sums
+find debian/usr -type f -exec md5sum {} \; > debian/DEBIAN/md5sums
 sed -i 's/debian\///g' debian/DEBIAN/md5sums
 
 echo "Building debian package" 

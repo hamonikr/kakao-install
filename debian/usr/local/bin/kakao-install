@@ -59,10 +59,12 @@ pkexec sudo su - root -c "\
 				winetricks \
 				wine32-development:i386 \
 				libwine-development:i386=3.6-1 \
+				libasound2-plugins:i386 \
+				libjack-jackd2-0 \
 				winehq-stable \
+				wine-stable-i386=4.0~bionic \
 				wine-stable=4.0~bionic \
 				wine32-development -y;"
-
 
 if [ -d /home/$userid/.wine ]; then
 zenity --question --no-wrap --height=150 --width=450 --title="와인 홈경로 검색"  --text=$"

@@ -1,3 +1,10 @@
+kakao-install (1.0.3-1) bionic; urgency=medium
+
+  * 설치시 저장소 업데이트 부분 수정
+
+ -- HamoniKR Team <hamonikr-packages@googlegroups.com> Mon, 21 Oct 2019 10:38:57 +0900
+
+
 kakao-install (1.0.2-1) bionic; urgency=medium
 
   * 설치시 저장소 업데이트 부분 수정
